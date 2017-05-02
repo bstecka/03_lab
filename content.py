@@ -13,7 +13,7 @@ def sigmoid(x):
     :param x: wektor wejsciowych wartosci Nx1
     :return: wektor wyjściowych wartości funkcji sigmoidalnej dla wejścia x, Nx1
     '''
-    pass
+    return np.divide(1, np.add(1, np.exp(-x)))
 
 
 def logistic_cost_function(w, x_train, y_train):
@@ -23,7 +23,11 @@ def logistic_cost_function(w, x_train, y_train):
     :param y_train: ciag treningowy - wyjscia Nx1
     :return: funkcja zwraca krotke (val, grad), gdzie val oznacza wartosc funkcji logistycznej, a grad jej gradient po w
     '''
-    pass
+    N = x_train.shape[0]
+    sig_n = sigmoid(x_train @ w)
+    L_w = np.sum(np.divide(y_train * np.log(sig_n) + (1 - y_train) * np.log(1 - sig_n), -N)) #czemu sumujemy??
+    grad = x_train.transpose() @ (sig_n - y_train) / N
+    return L_w, grad
 
 
 def gradient_descent(obj_fun, w0, epochs, eta):
@@ -35,7 +39,19 @@ def gradient_descent(obj_fun, w0, epochs, eta):
     :return: funkcja wykonuje optymalizacje metoda gradientu prostego dla funkcji obj_fun. Zwraca krotke (w,func_values),
     gdzie w oznacza znaleziony optymalny punkt w, a func_valus jest wektorem wartosci funkcji [epochs x 1] we wszystkich krokach algorytmu
     '''
-    pass
+    func_values = []
+    w = w0
+    _, grad_w = obj_fun(w)
+    w = w - eta * grad_w
+
+    for k in range(1, epochs):
+        L_w, grad_w = obj_fun(w)
+        func_values.append(L_w)
+        w = w - eta * grad_w
+
+    L_w, _ = obj_fun(w)
+    func_values.append(L_w)
+    return w, np.reshape(np.array(func_values), (epochs, 1))
 
 
 def stochastic_gradient_descent(obj_fun, x_train, y_train, w0, epochs, eta, mini_batch):
