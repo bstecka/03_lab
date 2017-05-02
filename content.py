@@ -7,6 +7,7 @@
 # --------------------------------------------------------------------------
 
 import numpy as np
+import functools
 
 def sigmoid(x):
     '''
@@ -65,10 +66,32 @@ def stochastic_gradient_descent(obj_fun, x_train, y_train, w0, epochs, eta, mini
     :param eta: krok uczenia
     :param mini_batch: wielkosc mini-batcha
     :return: funkcja wykonuje optymalizacje metoda stochastycznego gradientu prostego dla funkcji obj_fun. Zwraca krotke (w,func_values),
-    gdzie w oznacza znaleziony optymalny punkt w, a func_values jest wektorem wartosci funkcji [epochs x 1] we wszystkich krokach algorytmu. Wartosci
+    gdzie w oznacza znaleziony optymal
+    ny punkt w, a func_values jest wektorem wartosci funkcji [epochs x 1] we wszystkich krokach algorytmu. Wartosci
     funkcji do func_values sa wyliczane dla calego zbioru treningowego!
     '''
-    pass
+
+    Nb = mini_batch
+    M = y_train.shape[0] // Nb #floor division
+    w_values = []
+    func_values = []
+    x_batches = []
+    y_batches = []
+
+    for m in range(M):
+        x_batches.append(x_train[m * Nb: (m + 1) * Nb, :]) #take matrix slice of data (size = Nb * x_train.shape[1])
+        y_batches.append(y_train[m * Nb: (m + 1) * Nb, :])
+
+    w = w0
+    for k in range(epochs):
+        for m in range(M):
+            _, grad_w = obj_fun(w, x_batches[m], y_batches[m])
+            w = w - eta * grad_w
+        L_w, _ = obj_fun(w, x_train, y_train)
+        func_values.append(L_w)
+    #Funkcja dodatkowo ma zwracac wartosci funkcji celu wywołanej dla całego zbioru treningowego dla kazdej iteracji algorytmu.
+
+    return w, np.reshape(np.array(func_values), (epochs, 1))
 
 
 def regularized_logistic_cost_function(w, x_train, y_train, regularization_lambda):
