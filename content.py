@@ -158,7 +158,6 @@ def model_selection(x_train, y_train, x_val, y_val, w0, epochs, eta, mini_batch,
     L = len(lambdas)
     T = len(thetas)
     F = np.zeros(shape=(L, T))
-    w = w0
     for l in range(L):
         def funkcja_celu(a, b, c):
             return regularized_logistic_cost_function(a, b, c, lambdas[l])
