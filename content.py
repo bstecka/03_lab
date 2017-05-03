@@ -73,7 +73,6 @@ def stochastic_gradient_descent(obj_fun, x_train, y_train, w0, epochs, eta, mini
 
     Nb = mini_batch
     M = y_train.shape[0] // Nb #floor division
-    w_values = []
     func_values = []
     x_batches = []
     y_batches = []
@@ -90,7 +89,6 @@ def stochastic_gradient_descent(obj_fun, x_train, y_train, w0, epochs, eta, mini
         L_w, _ = obj_fun(w, x_train, y_train)
         func_values.append(L_w)
     #Funkcja dodatkowo ma zwracac wartosci funkcji celu wywołanej dla całego zbioru treningowego dla kazdej iteracji algorytmu.
-
     return w, np.reshape(np.array(func_values), (epochs, 1))
 
 
@@ -103,7 +101,15 @@ def regularized_logistic_cost_function(w, x_train, y_train, regularization_lambd
     :return: funkcja zwraca krotke (val, grad), gdzie val oznacza wartosc funkcji logistycznej z regularyzacja l2,
     a grad jej gradient po w
     '''
-    pass
+    w_sliced = w[1:]
+    reg = regularization_lambda/2*(np.linalg.norm(w_sliced)**2)
+    N = x_train.shape[0]
+    sig_n = sigmoid(x_train @ w)
+    L_w = np.sum(np.divide(y_train * np.log(sig_n) + (1 - y_train) * np.log(1 - sig_n), -N))
+    w_zero = w.copy()
+    w_zero[0] = 0
+    grad = (x_train.transpose() @ (sig_n - y_train)) / N + regularization_lambda * w_zero
+    return L_w + reg, grad
 
 
 def prediction(x, w, theta):
@@ -114,7 +120,8 @@ def prediction(x, w, theta):
     :return: funkcja wylicza wektor y o wymiarach Nx1. Wektor zawiera wartosci etykiet ze zbioru {0,1} dla obserwacji z x
      bazujac na modelu z parametrami w oraz progu klasyfikacji theta
     '''
-    pass
+    sig = sigmoid(x @ w)
+    return np.greater(sig, theta).astype(int)
 
 
 def f_measure(y_true, y_pred):
