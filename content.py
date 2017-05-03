@@ -164,7 +164,7 @@ def model_selection(x_train, y_train, x_val, y_val, w0, epochs, eta, mini_batch,
             return regularized_logistic_cost_function(a, b, c, lambdas[l])
         w, _ = stochastic_gradient_descent(funkcja_celu, x_train, y_train, w0, epochs, eta, mini_batch)
         for t in range(T):
-            f_val = f_measure(y_val, prediction(x_train, w, thetas[t]))
+            f_val = f_measure(y_val, prediction(x_val, w, thetas[t]))
             F[l, t] = f_val
             if f_val >= best_f: #Zwróc wartosci lambda i theta, dla których wartosc F-measure była najwieksza.
                 best_f = f_val
