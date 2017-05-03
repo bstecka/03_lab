@@ -7,14 +7,13 @@
 # --------------------------------------------------------------------------
 
 import numpy as np
-import functools
 
 def sigmoid(x):
     '''
     :param x: wektor wejsciowych wartosci Nx1
     :return: wektor wyjściowych wartości funkcji sigmoidalnej dla wejścia x, Nx1
     '''
-    return np.divide(1, np.add(1, np.exp(-x)))
+    return 1 / (1 + np.exp(-x))
 
 
 def logistic_cost_function(w, x_train, y_train):
@@ -70,7 +69,6 @@ def stochastic_gradient_descent(obj_fun, x_train, y_train, w0, epochs, eta, mini
     ny punkt w, a func_values jest wektorem wartosci funkcji [epochs x 1] we wszystkich krokach algorytmu. Wartosci
     funkcji do func_values sa wyliczane dla calego zbioru treningowego!
     '''
-
     Nb = mini_batch
     M = y_train.shape[0] // Nb #floor division
     func_values = []
@@ -130,7 +128,10 @@ def f_measure(y_true, y_pred):
     :param y_pred: wektor etykiet przewidzianych przed model Nx1
     :return: funkcja wylicza wartosc miary F
     '''
-    pass
+    TP = np.sum(np.bitwise_and(y_true, y_pred))
+    FP = np.sum(np.bitwise_and(np.bitwise_not(y_true), y_pred))
+    FN = np.sum(np.bitwise_and(y_true, np.bitwise_not(y_pred)))
+    return (2 * TP) / (2 * TP + FP + FN)
 
 
 def model_selection(x_train, y_train, x_val, y_val, w0, epochs, eta, mini_batch, lambdas, thetas):
