@@ -198,7 +198,8 @@ class TestModelSelection(unittest.TestCase):
         thetas = TEST_DATA['ms']['thetas']
         lambdas = TEST_DATA['ms']['lambdas']
         theta = TEST_DATA['ms']['theta']
-        _,theta_computed,_,_ = model_selection(x_train,y_train,x_val,y_val,w0,epochs,eta,mini_batch,lambdas,thetas)
+        _, theta_computed, _, _ = model_selection(x_train, y_train, x_val, y_val, w0, epochs, eta, mini_batch, lambdas,
+                                                  thetas)
         self.assertAlmostEqual(theta, theta_computed, 6)
 
     def test_model_selection_w(self):
